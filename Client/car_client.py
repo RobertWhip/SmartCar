@@ -10,12 +10,11 @@ import camera
 debug = True
 header_size = 10
 encoding = 'ISO-8859-1'
-connection = ('localhost', 3005)
+connection = ('192.168.1.163', 3005)
 reconnect_time = 5
 
 socket_base = SocketBase(header_size, encoding)
 cam = camera.Vision()
-
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -31,11 +30,19 @@ try:
             img_bytes = cv2.imencode('.jpg', cam.get_gray_image())[1].tostring()
 
             if debug:
-                print('sending', len(img_bytes), type(img_bytes), img_bytes)
+                print('Sending', len(img_bytes), 'bytes')
+
             socket_base.send_message(sock, img_bytes.decode(encoding))
 
+            # server_msg --- data from the server
             server_msg = socket_base.receive_message(sock)[header_size:]
-            print('Received:', server_msg)
+            if debug:
+                print('Received:', server_msg)
+
+
+            # YOUR CODE
+
+
 except Exception as e:
     print(e)
     sock.close()
